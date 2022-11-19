@@ -2,10 +2,10 @@ use crate::{
     lib::string_with_arrows::{
         string_with_arrows,
     },
-    basic::position::Position
+    staminars::tokens::position::Position
 };
 use std::fmt;
-
+/// Base Error Type for the interpreter
 pub(crate) struct Error {
     pub details: String,
     pub pos_start: Position,
@@ -39,6 +39,8 @@ impl Error {
 
         return result;
     }
+    /// Generate a runtime error with a traceback
+    /// TODO!
     pub fn new_runtime_error(
         pos_start:Position,
         pos_end:Position,
@@ -62,6 +64,8 @@ impl Error {
     }
 }
 
+/// Enum for the different types of errors
+/// Todo add errors to list
 pub(crate) enum ErrorType {
     IllegalCharError,
     ExpectedCharError,

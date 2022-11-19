@@ -1,60 +1,40 @@
 #![allow(unused)]
-//Import Tokens from ./basic/token.rs
-pub mod basic{
-    pub mod token;
-    pub mod position;
-    pub mod lexer;
-    pub mod runner;
-    pub mod context;
-    pub mod symboltable;
+pub mod staminars {
     pub mod errors {
         pub mod errors;
+    }
+    pub mod interpreter {
+        pub mod interpreter;
+    }
+    pub mod lexer {
+        pub mod lexer;
     }
     pub mod nodes {
         pub mod nodes;
     }
+    pub mod parser {
+        pub mod parser;
+    }
+    pub mod tokens {
+        pub mod token;
+        pub mod position;
+    }
 }
-use crate::basic::{
-    token::{
-        Token,
-        TokenType,
-        Keywords,
-        Characters,
-    },
-    position::Position,
-    lexer::Lexer,
-    runner::Runner,
-    errors::errors::{
-        Error,
-        ErrorType,
-    },
-};
-
 pub mod lib {
     pub mod string_with_arrows;
 }
+use crate::staminars::{
+    lexer::lexer::Lexer,
+};
 
 use crate::lib::string_with_arrows::{
     string_with_arrows,
     
 };
 fn main() {
-    let error = Error::new(
-        Position::new(
-            0,
-            0,
-            0,
-            "<stdin>".to_string(),
-            "sal\nut".to_string(),
-        ),
-        Position::new(
-            10,
-            0,
-            0,
-            "<stdin>".to_string(),
-            "salut".to_string(),
-        ),
-        "Some details...".to_string(),
-        ErrorType::IllegalCharError,
+    let mut lexer = Lexer::new(
+        "<stdin>".to_string(),
+        "var num = 5 + 5 * 20.3 \0".to_string(),
     );
+    lexer.make_tokens();
 }

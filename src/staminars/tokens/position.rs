@@ -1,13 +1,12 @@
-#![feature(option_result_contains)]
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq,)]
+/// Base struct for the position of a token in the source code
 pub(crate) struct Position {
-    pub idx:u32,
-    pub ln:u32,
-    pub col:u32,
-    pub file_name:String,
-    pub text:String,
+    pub idx: u32,
+    pub ln: u32,
+    pub col: u32,
+    pub file_name: String,
+    pub text: String,
 }
-
 impl Position {
     pub fn new(
         idx:u32,
@@ -24,10 +23,11 @@ impl Position {
             text,
         }
     }
+    /// Advance the position by 1 character
     pub fn advance(
-        mut self,
+        &mut self,
         current_char:Option<char>
-    ) -> Position {
+    ) -> &Position {
         self.idx += 1;
         self.col += 1;
 
@@ -41,14 +41,5 @@ impl Position {
             None => println!("None"),
         }
         return self
-    }
-    pub fn copy(self) -> Position {
-        return Position {
-            idx: self.idx.clone(),
-            ln: self.ln.clone(),
-            col: self.col.clone(),
-            file_name: self.file_name.clone(),
-            text: self.text.clone(),
-        }
     }
 }

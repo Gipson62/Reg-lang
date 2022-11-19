@@ -1,9 +1,11 @@
 #![allow(unused)]
 
 use std::fmt;
-use super::position::Position;
+use crate::staminars::tokens::position::Position;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
+/// Token refer to each word or symbol in the source code
+/// It contains the token type, the value and the position in the code
 pub(crate) struct Token {
     pub token_type: TokenType,
     pub pos_start: Position,
@@ -40,6 +42,7 @@ impl Token {
 
 
 #[derive(Debug, Clone, PartialEq)]
+/// Enum for the different types of tokens
 pub(crate) enum TokenType {
     TTInt,
     TTFloat,
@@ -65,7 +68,9 @@ pub(crate) enum TokenType {
     TTComma,
     TTArrow,
     TTNewLine,
-    TTEndOfLine
+    TTEndOfLine,
+    TTSemicolon,
+    TTTabulation,
 }
 impl fmt::Display for TokenType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -95,10 +100,47 @@ impl fmt::Display for TokenType {
                 TokenType::TTArrow => write!(f, "TTArrow"),
                 TokenType::TTNewLine => write!(f, "TTNewLine"),
                 TokenType::TTEndOfLine => write!(f, "TTEndOfLine"),
+                TokenType::TTSemicolon => write!(f, "TTSemicolon"),
+                TokenType::TTTabulation => write!(f, "TTTabulation"),
         }
     }
 }
 
+pub(crate) struct Iter<'a> {
+    pub inner: &'a Keywords,
+    pub index: u8,
+}
+
+impl<'a> Iterator for Iter<'a> {
+    type Item = &'a String;
+    
+    fn next(&mut self) -> Option<Self::Item> {
+        let ret = match self.index {
+            0 => &self.inner.kw_var,
+            1 => &self.inner.kw_and,
+            2 => &self.inner.kw_or,
+            3 => &self.inner.kw_not,
+            4 => &self.inner.kw_if,
+            5 => &self.inner.kw_else,
+            6 => &self.inner.kw_for,
+            7 => &self.inner.kw_to,
+            8 => &self.inner.kw_step,
+            9 => &self.inner.kw_while,
+            10 => &self.inner.kw_func,
+            11 => &self.inner.kw_return,
+            12 => &self.inner.kw_continue,
+            13 => &self.inner.kw_break,
+            14 => &self.inner.kw_then,
+            15 => &self.inner.kw_end,
+            _ => return None,
+        };
+        self.index += 1;
+        Some(ret)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq,)]
+/// List of all the keywords in the language
 pub(crate) struct Keywords {
     pub kw_var:String,
     pub kw_and:String,
@@ -118,6 +160,7 @@ pub(crate) struct Keywords {
     pub kw_end:String,
 }
 impl Keywords {
+    /// Generate the list of keywords
     pub fn new() -> Keywords {
         Keywords {
             kw_var:String::from("var"),
@@ -138,14 +181,23 @@ impl Keywords {
             kw_end:String::from("end"),
         }
     }
+    pub fn iter(&self) -> Iter<'_> {
+        Iter {
+            inner: self,
+            index: 0,
+        }
+    }
 }
 
+#[derive(Debug, Clone, PartialEq)]
+/// Contains all characters that are used in the language
 pub(crate) struct Characters {
     pub digits:[char; 10],
     pub letters:[char; 52],
     pub skip_letters:char,
     pub new_line:char,
     pub comment_symbol:char,
+    pub symbols:[char; 18],
 }
 impl Characters {
     pub fn new() -> Characters {
@@ -155,6 +207,7 @@ impl Characters {
             skip_letters:char::from(92),
             new_line:char::from('\n'),
             comment_symbol:char::from('#'),
+            symbols:['+', '*', '/', '^', '(', ')', '[', ']', ',', ';', '\n', '\t', '-', '>', '<', '=', '!', '"'],
         }
     }
 }

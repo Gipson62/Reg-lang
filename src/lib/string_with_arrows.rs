@@ -1,4 +1,4 @@
-use crate::basic::position::Position;
+use crate::staminars::tokens::position::Position;
 use std::cmp::max;
 
 /// This function is used to add up arrows under the error
