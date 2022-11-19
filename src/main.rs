@@ -5,8 +5,13 @@ pub mod basic{
     pub mod position;
     pub mod lexer;
     pub mod runner;
+    pub mod context;
+    pub mod symboltable;
     pub mod errors {
         pub mod errors;
+    }
+    pub mod nodes {
+        pub mod nodes;
     }
 }
 use crate::basic::{
@@ -33,10 +38,6 @@ use crate::lib::string_with_arrows::{
     string_with_arrows,
     
 };
-
-mod salut;
-use crate::salut::Salut;
-
 fn main() {
     let error = Error::new(
         Position::new(

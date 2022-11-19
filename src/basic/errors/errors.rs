@@ -39,6 +39,27 @@ impl Error {
 
         return result;
     }
+    pub fn new_runtime_error(
+        pos_start:Position,
+        pos_end:Position,
+        details: String,
+    ) -> Error {
+        let error = Error {
+            details,
+            pos_start,
+            pos_end,
+            error_type: ErrorType::RunTimeError,
+        };
+        error.as_string();
+        error
+    }
+    fn generate_traceback(&self) -> String {
+        let mut result = String::new();
+        let pos = self.pos_start.clone();
+        
+
+        return result
+    }
 }
 
 pub(crate) enum ErrorType {

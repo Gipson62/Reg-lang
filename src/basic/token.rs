@@ -3,7 +3,7 @@
 use std::fmt;
 use super::position::Position;
 
-
+#[derive(Clone)]
 pub(crate) struct Token {
     pub token_type: TokenType,
     pub pos_start: Position,
