@@ -1,4 +1,4 @@
-use crate::staminars::{
+use crate::core::{
     errors::errors::{
         Error,
         ErrorType,
@@ -79,7 +79,15 @@ impl Lexer {
                 );
                 panic!("{}", error.as_string());
             }
-        }    
+        }
+        tokens.push(
+            Token::new(
+                TokenType::TTEndOfLine,
+                self.pos.clone(),
+                self.pos.clone(),
+                '\0'.to_string(),
+            )
+        );
         for token in tokens {
             print!("[{}] ", token.to_string());
         }    
@@ -94,40 +102,124 @@ impl Lexer {
     fn make_symbols(&mut self) -> Option<Token> {
         match self.current_char {
             '+' => {
-                return Some(Token::new(TokenType::TTPlus, self.pos.clone(), self.pos.clone(), String::from("+")))
+                return Some(
+                    Token::new(
+                        TokenType::TTPlus,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("+")
+                    )
+                )
             }
             '(' => {
-                return Some(Token::new(TokenType::TTLParen, self.pos.clone(), self.pos.clone(), String::from("(")))
+                return Some(
+                    Token::new(
+                        TokenType::TTLParen,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("(")
+                    )
+                )
             }
             ')' => {
-                return Some(Token::new(TokenType::TTRParen, self.pos.clone(), self.pos.clone(), String::from(")")))
+                return Some(
+                    Token::new(
+                        TokenType::TTRParen,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from(")")
+                    )
+                )
             }
             '[' => {
-                return Some(Token::new(TokenType::TTLSquare, self.pos.clone(), self.pos.clone(), String::from("[")))
+                return Some(
+                    Token::new(
+                        TokenType::TTLSquare,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("[")
+                    )
+                )
             }
             ']' => {
-                return Some(Token::new(TokenType::TTRSquare, self.pos.clone(), self.pos.clone(), String::from("]")))
+                return Some(
+                    Token::new(
+                        TokenType::TTRSquare,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("]")
+                    )
+                )
             }
             '*' => {
-                return Some(Token::new(TokenType::TTMultiply, self.pos.clone(), self.pos.clone(), String::from("*")))
+                return Some(
+                    Token::new(
+                        TokenType::TTMultiply,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("*")
+                    )
+                )
             }
             '/' => {
-                return Some(Token::new(TokenType::TTDivide, self.pos.clone(), self.pos.clone(), String::from("/")))
+                return Some(
+                    Token::new(
+                        TokenType::TTDivide,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("/")
+                    )
+                )
             }
             '^' => {
-                return Some(Token::new(TokenType::TTPower, self.pos.clone(), self.pos.clone(), String::from("^")))
+                return Some(
+                    Token::new(
+                        TokenType::TTPower,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("^")
+                    )
+                )
             }
             ',' => {
-                return Some(Token::new(TokenType::TTComma, self.pos.clone(), self.pos.clone(), String::from(",")))
+                return Some(
+                    Token::new(
+                        TokenType::TTComma,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from(",")
+                    )
+                )
             }
             ';' => {
-                return Some(Token::new(TokenType::TTSemicolon, self.pos.clone(), self.pos.clone(), String::from(";")))
+                return Some(
+                    Token::new(
+                        TokenType::TTSemicolon,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from(";")
+                    )
+                )
             }
             '\n' => {
-                return Some(Token::new(TokenType::TTNewLine, self.pos.clone(), self.pos.clone(), String::from("\n")))
+                return Some(
+                    Token::new(
+                        TokenType::TTNewLine,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("\n")
+                    )
+                )
             }
             '\t' => {
-                return Some(Token::new(TokenType::TTTabulation, self.pos.clone(), self.pos.clone(), String::from("\t")))
+                return Some(
+                    Token::new(
+                        TokenType::TTTabulation,
+                        self.pos.clone(),
+                        self.pos.clone(),
+                        String::from("\t")
+                    )
+                )
             }
             '"' => {
                 return Some(self.make_string())
@@ -152,25 +244,45 @@ impl Lexer {
             }
         }
     }
-
+    /// Make the token for '<' and '<=' (if the next char is '=')
     fn make_less_than(&mut self) -> Token {
         let pos_start = self.pos.clone();
         self.advance();
         if self.current_char == '=' {
             self.advance();
-            return Token::new(TokenType::TTLessThanEqual, pos_start, self.pos.clone(), String::from("<="))
+            return Token::new(
+                TokenType::TTLessThanEqual,
+                pos_start,
+                self.pos.clone(),
+                String::from("<=")
+            )
         }
-        return Token::new(TokenType::TTLessThan, pos_start, self.pos.clone(), String::from("<"))
+        return Token::new(
+            TokenType::TTLessThan,
+            pos_start,
+            self.pos.clone(),
+            String::from("<")
+        )
     }
-    /// Male the token for '>' or '>=' (if the next char is '=') 
+    /// Make the token for '>' or '>=' (if the next char is '=') 
     fn make_greater_than(&mut self) -> Token {
         let pos_start = self.pos.clone();
         self.advance();
         if self.current_char == '=' {
             self.advance();
-            return Token::new(TokenType::TTGreaterThanEqual, pos_start, self.pos.clone(), String::from(">="))
+            return Token::new(
+                TokenType::TTGreaterThanEqual,
+                pos_start,
+                self.pos.clone(),
+                String::from(">=")
+            )
         } else {
-            return Token::new(TokenType::TTGreaterThan, pos_start, self.pos.clone(), String::from(">"))
+            return Token::new(
+                TokenType::TTGreaterThan,
+                pos_start,
+                self.pos.clone(),
+                String::from(">")
+            )
         }
     }
     /// Make the token for '!=' (if the next char isn't '=' Lexer will panic and return an error)
@@ -180,10 +292,20 @@ impl Lexer {
 
         if self.current_char == '=' {
             self.advance();
-            return Token::new(TokenType::TTNotEqual, pos_start, self.pos.clone(), String::from("!="))
+            return Token::new(
+                TokenType::TTNotEqual,
+                pos_start,
+                self.pos.clone(),
+                String::from("!=")
+            )
         }
         self.advance();
-        let error = Error::new(pos_start, self.pos.clone(), String::from("Expected '=' after '!'"), ErrorType::ExpectedCharError);
+        let error = Error::new(
+            pos_start,
+            self.pos.clone(),
+            String::from("Expected '=' after '!'"),
+            ErrorType::ExpectedCharError
+        );
         panic!("{}",error.as_string());
     }
     /// Make the token for the equal or double equal symbol.
@@ -193,10 +315,20 @@ impl Lexer {
 
         if self.current_char == '=' {
             self.advance();
-            return Token::new(TokenType::TTDoubleEqual, pos_start, self.pos.clone(), String::from("=="))
+            return Token::new(
+                TokenType::TTDoubleEqual,
+                pos_start,
+                self.pos.clone(),
+                String::from("==")
+            )
         }
 
-        return Token::new(TokenType::TTEqual, pos_start, self.pos.clone(), String::from("="))
+        return Token::new(
+            TokenType::TTEqual,
+            pos_start,
+            self.pos.clone(),
+            String::from("=")
+        )
     }
     /// Create the minus or the arrow [`Token`]
     /// 
@@ -207,9 +339,19 @@ impl Lexer {
 
         if self.current_char == '>' {
             self.advance();
-            return Token::new(TokenType::TTArrow, pos_start, self.pos.clone(), String::from("->"))
+            return Token::new(
+                TokenType::TTArrow,
+                pos_start,
+                self.pos.clone(),
+                String::from("->")
+            )
         } else {
-            return Token::new(TokenType::TTMinus, pos_start, self.pos.clone(), String::from("-"))
+            return Token::new(
+                TokenType::TTMinus,
+                pos_start,
+                self.pos.clone(),
+                String::from("-"))
+
         }
     }
     /// Create the string [`Token`] (string are between double quotes)
@@ -230,7 +372,7 @@ impl Lexer {
                     string.push(self.current_char);
                 }
             } else {
-                if self.current_char == '\\' {
+                if self.current_char == char::from(92) {
                     escape_character = true;
                 } else {
                     string.push(self.current_char);
@@ -249,7 +391,12 @@ impl Lexer {
             panic!("{}", error.as_string());
         }
         self.advance();
-        return Token::new(TokenType::TTString, pos_start, self.pos.clone(), string)
+        return Token::new(
+            TokenType::TTString,
+            pos_start,
+            self.pos.clone(),
+            string
+        )
     }
     /// Skip the line commented with `#`
     fn skip_comment(&mut self) {
@@ -303,16 +450,26 @@ impl Lexer {
         let pos_start = self.pos.clone();
         let all_keywords = Keywords::new();
 
-        while self.current_char != '\0' && (characters.letters.contains(&self.current_char) || self.current_char == '_' ){
+        while self.current_char != '\0' && (characters.letters.contains(&self.current_char) || self.current_char == '_' ) {
             keyword.push(self.current_char);
             self.advance();
         }
 
         for key in all_keywords.iter() {
             if key == &keyword {
-                return Token::new(TokenType::TTKeyword, pos_start, self.pos.clone(), keyword)
+                return Token::new(
+                    TokenType::TTKeyword,
+                    pos_start,
+                    self.pos.clone(),
+                    keyword
+                )
             }
         }
-        return Token::new(TokenType::TTIdentifier, pos_start, self.pos.clone(), keyword)         
+        return Token::new(
+            TokenType::TTIdentifier,
+            pos_start,
+            self.pos.clone(),
+            keyword
+        )
     }
 }

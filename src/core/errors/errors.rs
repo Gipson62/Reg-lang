@@ -2,7 +2,7 @@ use crate::{
     lib::string_with_arrows::{
         string_with_arrows,
     },
-    staminars::tokens::position::Position
+    core::tokens::position::Position
 };
 use std::fmt;
 /// Base Error Type for the interpreter
@@ -25,7 +25,6 @@ impl Error {
             pos_end,
             error_type,
         };
-        error.as_string();
         error
         
     }
@@ -33,9 +32,9 @@ impl Error {
     pub fn as_string(&self) -> String {
         let mut result = format!("{}: {}\n", self.error_type, self.details);
 
-        result.push_str(&format!("File {}, line {}", self.pos_start.file_name, self.pos_start.ln.to_string()));
+        result.push_str(&format!("File {}, line {}, pos {}", self.pos_start.file_name, self.pos_start.ln.to_string(), self.pos_start.idx));
         //result.push_str(&format!("\n\n{}", string_with_arrows(self.pos_start.text.clone(), self.pos_start.clone(), self.pos_end.clone())));
-        println!("{}", result);
+        //println!("{}", result);
 
         return result;
     }

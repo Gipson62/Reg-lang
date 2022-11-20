@@ -1,7 +1,7 @@
 #![allow(unused)]
 
 use std::fmt;
-use crate::staminars::tokens::position::Position;
+use crate::core::tokens::position::Position;
 
 #[derive(Clone, Debug, PartialEq)]
 /// Token refer to each word or symbol in the source code
