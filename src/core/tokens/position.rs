@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, PartialEq,)]
+#[derive(Clone, Debug, PartialEq)]
 /// Base struct for the position of a token in the source code
 pub(crate) struct Position {
     pub idx: u32,
