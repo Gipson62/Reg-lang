@@ -6,6 +6,7 @@ use crate::{
 };
 use std::fmt;
 /// Base Error Type for the interpreter
+#[derive(Debug, Clone)]
 pub(crate) struct Error {
     pub details: String,
     pub pos_start: Position,
@@ -65,6 +66,7 @@ impl Error {
 
 /// Enum for the different types of errors
 /// Todo add errors to list
+#[derive(Debug, Clone)]
 pub(crate) enum ErrorType {
     IllegalCharError,
     ExpectedCharError,
