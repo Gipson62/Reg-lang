@@ -2,6 +2,7 @@ use crate::core::tokens::{
     token::{Token, self},
     position::Position,
 };
+use std::fmt;
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum Nodes {
     Number(NumberNode),
@@ -57,6 +58,28 @@ impl Nodes {
             Nodes::Return(node) => node.pos_end.clone(),
             Nodes::Continue(node) => node.pos_end.clone(),
             Nodes::Break(node) => node.pos_end.clone(),
+        }
+    }
+}
+
+impl fmt::Display for Nodes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Nodes::Number(node) => write!(f, "Number"),
+            Nodes::String(node) => write!(f, "String"),
+            Nodes::List(node) => write!(f, "List"),
+            Nodes::VarAccess(node) => write!(f, "VarAccess"),
+            Nodes::VarAssign(node) => write!(f, "VarAssign"),
+            Nodes::BinOp(node) => write!(f, "BinOp"),
+            Nodes::UnaryOp(node) => write!(f, "UnaryOp"),
+            Nodes::If(node) => write!(f, "If"),
+            Nodes::For(node) => write!(f, "For"),
+            Nodes::While(node) => write!(f, "While"),
+            Nodes::FuncDef(node) => write!(f, "FuncDef"),
+            Nodes::Call(node) => write!(f, "Call"),
+            Nodes::Return(node) => write!(f, "Return"),
+            Nodes::Continue(node) => write!(f, "Continue"),
+            Nodes::Break(node) => write!(f, "Break"),
         }
     }
 }

@@ -14,6 +14,7 @@ pub mod core {
     }
     pub mod parser {
         pub mod parser;
+        pub mod parse_result;
     }
     pub mod tokens {
         pub mod token;
@@ -25,6 +26,7 @@ pub mod lib {
 }
 use crate::core::{
     lexer::lexer::Lexer,
+    parser::parser::Parser,
 };
 use crate::lib::string_with_arrows::{
     string_with_arrows,
@@ -35,5 +37,5 @@ fn main() {
         "<stdin>".to_string(),
         "var num = 5 + 5 * 20.3".to_string(),
     );
-    lexer.make_tokens();
+    let tokens = lexer.make_tokens();
 }

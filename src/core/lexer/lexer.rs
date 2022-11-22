@@ -49,7 +49,7 @@ impl Lexer {
         };
     }
     /// Creates a new [`Token`] with the given [`TokenType`] for each characters in the text.
-    pub fn make_tokens(&mut self) {
+    pub fn make_tokens(&mut self) -> Vec<Token>{
         let mut tokens:Vec<Token> = Vec::new();
         let characters = Characters::new();
 
@@ -88,9 +88,10 @@ impl Lexer {
                 '\0'.to_string(),
             )
         );
-        for token in tokens {
-            print!("[{}] ", token.to_string());
-        }    
+        for token in tokens.clone() {
+            println!("[{}] ", token.to_string());
+        }
+        return tokens
     }
     /// Make the token for all the symbols supported (except for the comment symbol)
     /// 

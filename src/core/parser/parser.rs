@@ -94,7 +94,11 @@ impl Parser {
     pub fn advance(&mut self) -> Token{
         self.token_index += 1;
         self.update_current_tok();
-        return self.current_tok.clone().unwrap();
+        if self.current_tok.is_some() {
+            return self.current_tok.clone().unwrap()
+        } else {
+            panic!("No current token PANIC")
+        }
     }
     
     pub fn reverse(&mut self, amount: u32) -> Option<Token>{
@@ -105,9 +109,8 @@ impl Parser {
     
     pub fn update_current_tok(& mut self) {
         if self.token_index < self.tokens.len() + 1 {
-            self.current_tok = Some(self.tokens[self.token_index - 1].clone())
-        } else {
-            self.current_tok = None;
+            self.current_tok = Some(self.tokens[self.token_index - 1].clone());
+            println!("Current token: {}", self.tokens.clone()[self.token_index.clone() - 1].clone().to_string());
         }
     }
     
