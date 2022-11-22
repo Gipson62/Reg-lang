@@ -1,5 +1,5 @@
 use crate::core::tokens::{
-    token::Token,
+    token::{Token, self},
     position::Position,
 };
 #[derive(Clone, Debug, PartialEq)]
@@ -98,12 +98,12 @@ impl StringNode {
 }
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct ListNode {
-    pub elements: Vec<Nodes>,
+    pub elements: Vec<Option<Nodes>>,
     pub pos_start: Position,
     pub pos_end: Position,
 }
 impl ListNode {
-    pub fn new(elements: Vec<Nodes>, pos_start: Position, pos_end: Position) -> ListNode {
+    pub fn new(elements: Vec<Option<Nodes>>, pos_start: Position, pos_end: Position) -> ListNode {
         ListNode {
             elements,
             pos_start,
@@ -129,17 +129,17 @@ impl VarAccessNode {
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct VarAssignNode {
     pub var_name_token: Token,
-    pub value_node: Token,
+    pub value_node: Vec<Nodes>,
     pub pos_start: Position,
     pub pos_end: Position,
 }
 impl VarAssignNode {
-    pub fn new(var_name_token: Token, value_node: Token) -> VarAssignNode {
+    pub fn new(var_name_token: Token, value_node: Nodes) -> VarAssignNode {
         VarAssignNode {
             var_name_token: var_name_token.clone(),
-            value_node: value_node.clone(),
+            value_node: vec![value_node.clone()],
             pos_start: var_name_token.pos_start,
-            pos_end: value_node.pos_end,
+            pos_end: value_node.get_pos_end(),
         }
     }
 }
@@ -181,24 +181,21 @@ impl UnaryOpNode {
 }
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct IfNode {
-    pub cases: Vec<(BinOpNode, Vec<Nodes>)>,
-    pub should_return_null: bool,
-    pub else_case: Option<Vec<Nodes>>,
+    pub cases: Vec<Option<Nodes>>,
+    pub else_case: Vec<Option<Nodes>>,
     pub pos_start: Position,
     pub pos_end: Position,
 }
 impl IfNode {
-    pub fn new(cases:Vec<(BinOpNode, Vec<Nodes>)>, else_case: Option<Vec<Nodes>>, should_return_null:bool) -> IfNode {
+    pub fn new(cases:Vec<Option<Nodes>>, else_case: Vec<Option<Nodes>>) -> IfNode {
         IfNode{
             cases: cases.clone(),
-            should_return_null,
             else_case: else_case.clone(),
-            pos_start: cases[0].0.pos_start.clone(),
-            pos_end: if else_case != None {
-                let else_case_vec = else_case.unwrap();
-                else_case_vec[else_case_vec.len() -1].get_pos_end()
+            pos_start: cases[0].clone().unwrap().get_pos_start(),
+            pos_end: if else_case[0] != None {
+                else_case[0].clone().unwrap().get_pos_end()
             } else {
-                cases[cases.len() -1].0.pos_end.clone()
+                cases[cases.len() -1].clone().unwrap().get_pos_end()
             } ,
         }
 
@@ -251,44 +248,46 @@ impl WhileNode {
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct FuncDefNode {
     pub var_name_token: Option<Token>,
-    pub arg_name_tokens: Option<Vec<Token>>,
+    pub arg_name_tokens: Vec<Token>,
     pub body_node: Vec<Nodes>,
     pub pos_start: Position,
     pub pos_end: Position,
+    pub should_return_null: bool,
 }
 impl FuncDefNode {
-    pub fn new(var_name_token: Option<Token>, arg_name_tokens: Option<Vec<Token>>, body_node: Vec<Nodes>) -> FuncDefNode {
+    pub fn new(var_name_token: Option<Token>, arg_name_tokens: Vec<Token>, body_node: Vec<Nodes>, should_return_null: bool) -> FuncDefNode {
         FuncDefNode {
             var_name_token: var_name_token.clone(),
             arg_name_tokens: arg_name_tokens.clone(),
             body_node: body_node.clone(),
             pos_start: if var_name_token != None {
                 var_name_token.unwrap().pos_start
-            } else if arg_name_tokens.clone() != None {
-                let salut = arg_name_tokens.unwrap()[0].clone();
+            } else if arg_name_tokens.clone().len() > 0 {
+                let salut = arg_name_tokens[0].clone();
                 salut.pos_start
             } else {
                 body_node[0].get_pos_start()
             },
             pos_end: body_node[body_node.len() -1].get_pos_end(),
+            should_return_null,
         }
     }
 }
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct CallNode {
     pub node_to_call: Vec<Nodes>,
-    pub arg_nodes: Vec<Nodes>,
+    pub arg_nodes: Vec<Option<Nodes>>,
     pub pos_start: Position,
     pub pos_end: Position,
 }
 impl CallNode {
-    pub fn new(node_to_call: Vec<Nodes>, arg_nodes: Vec<Nodes>) -> CallNode {
+    pub fn new(node_to_call: Vec<Nodes>, arg_nodes: Vec<Option<Nodes>>) -> CallNode {
         CallNode {
             node_to_call: node_to_call.clone(),
             arg_nodes: arg_nodes.clone(),
             pos_start: node_to_call[0].get_pos_start(),
             pos_end: if arg_nodes.len() > 0 {
-                arg_nodes[arg_nodes.len() -1].clone().get_pos_end()
+                arg_nodes[arg_nodes.len() -1].clone().unwrap().get_pos_end()
             } else {
                 node_to_call[0].clone().get_pos_end()
             },

@@ -96,8 +96,9 @@ impl Lexer {
     /// 
     /// Symbols supported (for the moment): + * / ^ ( ) [ ] , ; \n \t > < = ! " -
     /// 
-    /// - Todo : add '{' '}' => objects/dictionaries
+    /// - Todo : add '{' '}' => struct/dictionaries
     /// - Todo : add ':' => type hinting 
+    /// - Todo : add '%' => modulo operator
     ///     - Add TypeHinting
     fn make_symbols(&mut self) -> Option<Token> {
         match self.current_char {
