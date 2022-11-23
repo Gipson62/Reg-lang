@@ -31,7 +31,6 @@ impl Lexer {
                 0,
                 0,
                 filename.clone(),
-                txt.clone(),
             ),
             txt: txt.chars().collect(),
             current_char: '\0',
@@ -71,23 +70,11 @@ impl Lexer {
             else {
                 let pos_start = self.pos.clone();
                 let pos_end = self.pos.clone();
-                let error = Error::new(
-                    pos_start,
-                    pos_end,
-                    format!("Unexpected character: '{}'", self.current_char),
-                    ErrorType::IllegalCharError,
-                );
+                let error = Error::new(pos_start, pos_end, format!("Unexpected character: '{}'", self.current_char), ErrorType::IllegalCharError);
                 panic!("{}", error.as_string());
             }
         }
-        tokens.push(
-            Token::new(
-                TokenType::TTEndOfLine,
-                self.pos.clone(),
-                self.pos.clone(),
-                '\0'.to_string(),
-            )
-        );
+        tokens.push(Token::new(TokenType::TTEndOfLine, self.pos.clone(), self.pos.clone(), '\0'.to_string()));
         for token in tokens.clone() {
             println!("[{}] ", token.to_string());
         }
@@ -104,123 +91,48 @@ impl Lexer {
     fn make_symbols(&mut self) -> Option<Token> {
         match self.current_char {
             '+' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTPlus,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("+")
-                    )
-                )
+                return Some(Token::new(TokenType::TTPlus, self.pos.clone(), self.pos.clone(), String::from("+")))
             }
             '(' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTLParen,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("(")
-                    )
-                )
+                return Some(Token::new(TokenType::TTLParen, self.pos.clone(), self.pos.clone(), String::from("(")))
             }
             ')' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTRParen,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from(")")
-                    )
-                )
+                return Some(Token::new(TokenType::TTRParen, self.pos.clone(), self.pos.clone(), String::from(")")))
             }
             '[' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTLSquare,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("[")
-                    )
+                return Some(Token::new(    TokenType::TTLSquare,    self.pos.clone(),    self.pos.clone(),    String::from("["))
                 )
             }
             ']' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTRSquare,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("]")
-                    )
+                return Some(Token::new(    TokenType::TTRSquare,    self.pos.clone(),    self.pos.clone(),    String::from("]"))
                 )
             }
             '*' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTMultiply,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("*")
-                    )
+                return Some(Token::new(    TokenType::TTMultiply,    self.pos.clone(),    self.pos.clone(),    String::from("*"))
                 )
             }
             '/' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTDivide,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("/")
-                    )
+                return Some(Token::new(    TokenType::TTDivide,    self.pos.clone(),    self.pos.clone(),    String::from("/"))
                 )
             }
             '^' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTPower,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("^")
-                    )
+                return Some(Token::new(    TokenType::TTPower,    self.pos.clone(),    self.pos.clone(),    String::from("^"))
                 )
             }
             ',' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTComma,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from(",")
-                    )
+                return Some(Token::new(    TokenType::TTComma,    self.pos.clone(),    self.pos.clone(),    String::from(","))
                 )
             }
             ';' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTSemicolon,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from(";")
-                    )
+                return Some(Token::new(    TokenType::TTSemicolon,    self.pos.clone(),    self.pos.clone(),    String::from(";"))
                 )
             }
             '\n' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTNewLine,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("\n")
-                    )
+                return Some(Token::new(    TokenType::TTNewLine,    self.pos.clone(),    self.pos.clone(),    String::from("\n"))
                 )
             }
             '\t' => {
-                return Some(
-                    Token::new(
-                        TokenType::TTTabulation,
-                        self.pos.clone(),
-                        self.pos.clone(),
-                        String::from("\t")
-                    )
+                return Some(Token::new(    TokenType::TTTabulation,    self.pos.clone(),    self.pos.clone(),    String::from("\t"))
                 )
             }
             '"' => {
@@ -459,19 +371,10 @@ impl Lexer {
 
         for key in all_keywords.iter() {
             if key == &keyword {
-                return Token::new(
-                    TokenType::TTKeyword,
-                    pos_start,
-                    self.pos.clone(),
-                    keyword
+                return Token::new(TokenType::TTKeyword,pos_start,self.pos.clone(),keyword
                 )
             }
         }
-        return Token::new(
-            TokenType::TTIdentifier,
-            pos_start,
-            self.pos.clone(),
-            keyword
-        )
+        return Token::new(TokenType::TTIdentifier, pos_start, self.pos.clone(), keyword)
     }
 }
