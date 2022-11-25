@@ -85,6 +85,7 @@ impl Lexer {
                     self.advance(); 
                     if self.current_char == '>' {
                         self.tokens.push (Token::new(TokenType::TTArrow, format!("-{}", self.current_char), self.pos.clone()));
+                        self.advance();
                     }else {
                         self.tokens.push(Token::new(TokenType::TTMinus, "-".to_string(), self.pos.clone()));
                     }
