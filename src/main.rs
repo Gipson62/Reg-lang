@@ -38,6 +38,10 @@ pub mod unstable {
     pub mod errors {
         pub mod errors;
     }
+    pub mod parser {
+        pub mod parser;
+        pub mod nodes;
+    }
 }
 use crate::core::{
     lexer::lexer::Lexer,
@@ -60,8 +64,9 @@ use std::io::{
     Write,
 };
 fn main() {
-    /*let mut s = String::new();
+    let mut s = String::new();
     print!(">>> File or Console ? [f <file_path>/c]: ");
+    println!("The file is buggy, so use the console");
     let _ = stdout().flush();
     stdin().read_line(&mut s).expect("Did not enter a correct string");
 
@@ -75,8 +80,8 @@ fn main() {
         run_file(s[1..].to_string());
     } else {
         run_prompt();
-    }*/
-    let source = " != ! = < <= 10 10.1 -> \n - {/}\"salut\"".to_string();
+    }
+    /*let source = " != ! = < <= 10 10.1 -> \n - {/}\"salut\"".to_string();
     let mut lang = Language::new();
     let mut lexer = UnstableLexer::new(
         source,
@@ -86,8 +91,7 @@ fn main() {
     lexer.make_tokens();
     if lexer.lang.had_error {
         panic!("Lexer error");
-    }
-
+    }*/
 }
 
 pub fn run_file(path: String) {
@@ -121,7 +125,16 @@ pub fn run_prompt() {
             println!("Exiting...");
             break;
         }
-        println!("You typed: {}", s);
+        let mut lang = Language::new();
+        let mut lexer = UnstableLexer::new(
+            s,
+            UnstablePosition::new(0, 1, 0, "<stdin>".to_string()),
+            lang,
+        );
+        lexer.make_tokens();
+        if lexer.lang.had_error {
+            panic!("Lexer error");
+        }
     }
 }
 #[derive(Clone, Debug, PartialEq)]
