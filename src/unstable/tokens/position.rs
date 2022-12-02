@@ -1,6 +1,7 @@
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]
+/// Struct used by the Language to help find the position of an error.
 pub(crate) struct Position {
     pub idx : u32, 
     pub ln : u32,
@@ -8,6 +9,7 @@ pub(crate) struct Position {
     pub file_name : String,
 }
 impl Position {
+    /// Creates a new `Position` instance.
     pub fn new(idx : u32, ln : u32, col : u32, file_name : String) -> Position {
         Position {
             idx,

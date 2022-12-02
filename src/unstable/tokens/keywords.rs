@@ -1,11 +1,13 @@
 use crate::unstable::tokens::tokens_type::TokenType;
 
 #[derive(Clone, Debug, PartialEq)]
+/// Struct representing a `Keyword`.
 pub(crate) struct Keyword {
     pub name: String,
     pub tok_type: TokenType,
 }
 impl Keyword {
+    /// Creates a new `Keyword` instance.
     pub fn new(name: String, tok_type: TokenType) -> Keyword {
         Keyword {
             name,
@@ -14,10 +16,12 @@ impl Keyword {
     }
 }
 #[derive(Debug, Clone, PartialEq,)]
+/// List of all the existing `Keywords`.
 pub(crate) struct Keywords {
     pub keywords: Vec<Keyword>,
 }
 impl Keywords {
+    /// Creates a new `Keywords` instance.
     pub fn new() -> Keywords {
         Keywords {
             keywords: vec![

@@ -1,6 +1,7 @@
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]
+/// List of possible `TokenType`.
 pub(crate) enum TokenType {
     // Single characters tokens.
     TTLParen,

@@ -93,7 +93,8 @@ fn main() {
         panic!("Lexer error");
     }*/
 }
-
+/// Run the source code from a file.
+/// TODO! Fix it.
 pub fn run_file(path: String) {
     let source = std::fs::read_to_string(path).expect("File not found");
     let mut lang = Language::new();
@@ -107,7 +108,7 @@ pub fn run_file(path: String) {
         panic!("Lexer error");
     }
 }
-
+/// Run the source code from the console.
 pub fn run_prompt() {
     loop {
         let mut s = String::new();
@@ -138,15 +139,18 @@ pub fn run_prompt() {
     }
 }
 #[derive(Clone, Debug, PartialEq)]
+/// Struct to check if there is an error.
 pub(crate) struct Language {
     pub had_error: bool,
 }
 impl Language {
+    /// Creates a new `Language` instance.
     pub fn new() -> Language {
         Language {
             had_error: false,
         }
     }
+    /// Save if there is an error. After an operation, if there is an error, the programs need to crash.
     pub fn error(&mut self, pos_start: UnstablePosition, error_type: UnstableErrorType, details: String) {
         self.had_error = true;
         let mut error = UnstableError::new(

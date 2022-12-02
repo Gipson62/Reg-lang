@@ -5,7 +5,7 @@ use crate::{
     unstable::tokens::position::Position,
 };
 use std::fmt;
-/// Base Error Type for the interpreter
+/// Base `Error` struct for the `Interpreter`.
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Error {
     pub details: String,
@@ -13,6 +13,7 @@ pub(crate) struct Error {
     pub error_type: ErrorType,
 }
 impl Error {
+    /// Creates a new `Error` instance.
     pub fn new(
         pos_start:Position,
         details: String,
@@ -26,7 +27,7 @@ impl Error {
         error
         
     }
-    ///String representation of the [`Error`] struct
+    ///String representation of the `Error` struct
     pub fn as_string(&self) -> String {
         let mut result = format!("{}: {}\n", self.error_type, self.details);
 
@@ -50,6 +51,7 @@ impl Error {
         error.as_string();
         error
     }
+    /// TODO!
     fn generate_traceback(&self) -> String {
         let mut result = String::new();
         let pos = self.pos_start.clone();
@@ -59,8 +61,8 @@ impl Error {
     }
 }
 
-/// Enum for the different types of errors
-/// Todo add errors to list
+/// Enum for the different types of `Errors`.
+/// Todo add more errors to the list.
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum ErrorType {
     IllegalCharError,

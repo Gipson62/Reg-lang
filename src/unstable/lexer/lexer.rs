@@ -15,6 +15,7 @@ use crate::{
 };
 
 #[derive(Clone, Debug, PartialEq)]
+/// The `Lexer` is responsible for taking the source code and turning it into a list of `Tokens`.
 pub(crate) struct Lexer {
     pub source: Vec<char>,
     pub tokens: Vec<Token>,
@@ -24,6 +25,7 @@ pub(crate) struct Lexer {
     pub keywords: Keywords,
 }
 impl Lexer {
+    /// Create a new `Lexer` instance.
     pub fn new(source: String, pos: Position, lang: Language) -> Lexer {
         let source_vec:Vec<char> = source.chars().collect();
         let mut lexer = Lexer {
@@ -37,7 +39,7 @@ impl Lexer {
         lexer.source.push('\0');
         return lexer
     }
-
+    /// Advance the position of the `Lexer` to the next char.
     fn advance(&mut self) {
         self.pos.advance(Some(self.current_char.clone()));
         
@@ -45,7 +47,7 @@ impl Lexer {
             self.current_char = self.source[self.pos.idx as usize];
         }
     }
-
+    /// Create a new [`Token`] with the given [`TokenType`] for each characters in the source code.
     pub fn make_tokens(&mut self) -> Vec<Token> {
         while !self.is_at_end() {
             match self.current_char {
@@ -181,7 +183,7 @@ impl Lexer {
         }
         return self.tokens.clone();
     }
-
+    /// Make a `Keyword` or `Identifier` token based on the `Keyword` struct.
     fn make_identifier(& mut self) {
         let mut key = String::new();
         let mut is_keyword: bool = false;
@@ -192,9 +194,10 @@ impl Lexer {
         }
 
         for keyword in self.keywords.keywords.clone() {
-            if key.clone() == keyword.name {
+            if key == keyword.name {
                 self.tokens.push(Token::new(keyword.tok_type, key.clone(), self.pos.clone()));
                 is_keyword = true;
+                break;
             }
         }
 
@@ -202,7 +205,7 @@ impl Lexer {
             self.tokens.push(Token::new(TokenType::TTIdentifier, key.clone(), self.pos.clone()));
         }        
     }
-
+    /// Make an `Int` or a `Float` token based on if there's a `.` or not.
     fn make_number(&mut self) {
         let mut num_str = String::new();
         let mut dot_count = 0;
@@ -225,7 +228,7 @@ impl Lexer {
             self.tokens.push(Token::new(TokenType::TTFloat, num_str, self.pos.clone()));
         }
     }
-
+    /// Make a `String` token if there's no `"` at the end of the string, that add an error to the `Lang` struct.
     fn make_string(&mut self) {
         let mut string = String::new();
 
@@ -244,7 +247,7 @@ impl Lexer {
         self.advance();
         self.tokens.push(Token::new(TokenType::TTString, string, self.pos.clone()));
     }
-
+    /// Skip a comment if there's a `#` at the start of the line.
     fn skip_comment(&mut self) {
         self.advance();
 
@@ -256,7 +259,7 @@ impl Lexer {
         }
         self.advance();
     }
-
+    /// Check if the lexer is at the end of the file.
     fn is_at_end(&self) -> bool {
         return self.pos.idx as usize >= self.source.len() - 1;
     }

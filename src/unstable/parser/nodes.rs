@@ -12,6 +12,7 @@ use crate::{
     Language,
 };
 
+/// List of possible `LiteralValue` types.
 pub(crate) enum LiteralValue {
     Int(u64),
     Float(f64),
@@ -19,7 +20,7 @@ pub(crate) enum LiteralValue {
     Boolean(bool),
     None,
 }
-
+/// Enum `Expr` for the `Parser`
 pub(crate) enum Expr {
     Binary {
         left: Box<Expr>,
