@@ -80,7 +80,7 @@
     - read()
       - Lis l'input donné dans la console => Return un String
 
-  Casting :
+  - Casting :
     - x?.toString(x?)
       - Return x en String 
         > x peut être de tous les types (pour les structs/classes il faut implémenter soi même la méthode)
