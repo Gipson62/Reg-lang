@@ -36,6 +36,24 @@ impl Position {
 }
 
 impl fmt::Display for Position {
+    /// Formats the position as a string.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::fmt;
+    /// use std::fmt::Display;
+    /// use std::fmt::Formatter;
+    ///
+    /// let pos = Position {
+    ///     idx: 0,
+    ///     ln: 1,
+    ///     col: 1,
+    ///     file_name: "test.txt".to_string(),
+    /// };
+    ///
+    /// assert_eq!(format!("{}", pos), "Position [idx: 0, ln: 1, col: 1, file_name: test.txt]");
+    /// ```
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Position [idx: {}, ln: {}, col: {}, file_name: {}]", self.idx, self.ln, self.col, self.file_name)
     }

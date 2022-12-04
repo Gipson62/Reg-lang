@@ -5,10 +5,16 @@
     - Char (caractère unique) => Possibilité d'utiliser la table ASCII pour le générer
     - String (chaine de Char) => Possibilité de le générer via un Array de Char
   - Int :
-    - Signed? 32? 64? 16? 8?
-    - Unsigned? 32? 64? 16? 8?
+    - Int64
+    - Int32
+    - 16? 8?
+    - Unsigned64
+    - Unisgned32
+    - 16? 8?
   - Float :
-    - Float 32? 64? 16? 8?
+    - Float64
+    - Float32
+    - 16? 8?
   - Array :
     - Static Array (On peut pas le modif) [Array Rust]|[Tuple Python]
     - Dynamic Array (On peut le modif) [List Python]|[Vec Rust]
