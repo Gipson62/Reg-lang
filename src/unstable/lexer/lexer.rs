@@ -104,6 +104,10 @@ impl Lexer {
                     self.tokens.push(Token::new(TokenType::TTStar, self.current_char.to_string(), self.pos.clone()));
                     self.advance();
                 },
+                '/' => {
+                    self.tokens.push(Token::new(TokenType::TTSlash, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                }
                 '^' => {
                     self.tokens.push(Token::new(TokenType::TTPower, self.current_char.to_string(), self.pos.clone()));
                     self.advance();

@@ -64,34 +64,31 @@ use std::io::{
     Write,
 };
 fn main() {
-    let mut s = String::new();
-    print!(">>> File or Console ? [f <file_path>/c]: ");
-    println!("The file is buggy, so use the console");
-    let _ = stdout().flush();
-    stdin().read_line(&mut s).expect("Did not enter a correct string");
+    println!("--prompt of file path:");
+    // Read a line of input from the standard input stream
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap();
 
-    if let Some('\n') = s.chars().next_back() {
-        s.pop();
-    }
-    if let Some('\r') = s.chars().next_back() {
-        s.pop();
-    }
-    if s.starts_with('f') {
-        run_file(s[1..].to_string());
-    } else {
+    // Check if the input is the "--prompt" mode flag
+    if input.contains("--prompt") {
+        // Run the interpreter in prompt mode
         run_prompt();
+        return;
     }
-    /*let source = " != ! = < <= 10 10.1 -> \n - {/}\"salut\"".to_string();
-    let mut lang = Language::new();
-    let mut lexer = UnstableLexer::new(
-        source,
-        UnstablePosition::new(0, 1, 0, "<stdin>".to_string()),
-        lang,
-    );
-    lexer.make_tokens();
-    if lexer.lang.had_error {
-        panic!("Lexer error");
-    }*/
+
+    else if input.contains("--file") {
+        // Otherwise, check if the input is the file path
+        let filename = input.replace("--file", "").trim().to_string();
+        if !filename.is_empty() {
+            // Run the interpreter on the specified file
+            run_file(filename);
+            return;
+        }
+    }
+    
+
+    // Otherwise, print an error message
+    eprintln!("Error: no file path or mode flag provided");
 }
 /// Run the source code from a file.
 /// TODO! Fix it.
@@ -116,12 +113,6 @@ pub fn run_prompt() {
         let _ = stdout().flush();
         stdin().read_line(&mut s).expect("Did not enter a correct string");
         
-        if let Some('\n') = s.chars().next_back() {
-            s.pop();
-        }
-        if let Some('\r') = s.chars().next_back() {
-            s.pop();
-        }
         if s == "exit()" {
             println!("Exiting...");
             break;
@@ -129,7 +120,7 @@ pub fn run_prompt() {
         let mut lang = Language::new();
         let mut lexer = UnstableLexer::new(
             s,
-            UnstablePosition::new(0, 1, 0, "<stdin>".to_string()),
+            UnstablePosition::new(0, 1, 0, "<prompt>".to_string()),
             lang,
         );
         lexer.make_tokens();
