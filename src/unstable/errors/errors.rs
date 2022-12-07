@@ -14,11 +14,7 @@ pub(crate) struct Error {
 }
 impl Error {
     /// Creates a new `Error` instance.
-    pub fn new(
-        pos_start:Position,
-        details: String,
-        error_type: ErrorType,
-    ) -> Error {
+    pub fn new(pos_start:Position, details: String, error_type: ErrorType,) -> Error {
         let error = Error {
             details,
             pos_start,
@@ -32,17 +28,12 @@ impl Error {
         let mut result = format!("{}: {}\n", self.error_type, self.details);
 
         result.push_str(&format!("File {}, line {}, pos {}", self.pos_start.file_name, self.pos_start.ln.to_string(), self.pos_start.idx));
-        //result.push_str(&format!("\n\n{}", string_with_arrows(self.pos_start.text.clone(), self.pos_start.clone(), self.pos_end.clone())));
-        //println!("{}", result);
 
         return result;
     }
     /// Generate a runtime error with a traceback
     /// TODO!
-    pub fn new_runtime_error(
-        pos_start:Position,
-        details: String,
-    ) -> Error {
+    pub fn new_runtime_error(pos_start:Position, details: String,) -> Error {
         let error = Error {
             details,
             pos_start,
@@ -55,7 +46,6 @@ impl Error {
     fn generate_traceback(&self) -> String {
         let mut result = String::new();
         let pos = self.pos_start.clone();
-        
 
         return result
     }

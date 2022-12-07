@@ -30,6 +30,8 @@ pub(crate) enum LiteralValue {
     Char(char),
     Boolean(bool),
     None,
+    False,
+    True
 }
 /// Enum `Expr` for the `Parser`
 pub(crate) enum Expr {

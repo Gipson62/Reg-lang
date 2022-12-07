@@ -41,6 +41,7 @@ pub mod unstable {
     pub mod parser {
         pub mod parser;
         pub mod nodes;
+        pub mod parse_error;
     }
 }
 use crate::core::{
@@ -56,7 +57,11 @@ use crate::unstable::{
         Error as UnstableError,
         ErrorType as UnstableErrorType,
     },
-    tokens::position::Position as UnstablePosition,
+    tokens::{
+        position::Position as UnstablePosition,
+        tokens_type::TokenType as UnstableTokenType,
+        tokens::Token as UnstableToken,
+    },
 };
 use std::io::{
     stdin,
@@ -150,6 +155,13 @@ impl Language {
             error_type,
         );
         println!("{}", error.as_string());
+    }
+    pub fn parse_error(&mut self, token: UnstableToken, message: &str) {
+        if token.tok_type == UnstableTokenType::TTEndOfFile {
+            println!("{} at end {}", token.pos.ln, message);
+        } else {
+            println!("{} at '{}' {}", token.pos.ln, token.lexeme, message);
+        }
     }
 }
 
