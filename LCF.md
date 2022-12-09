@@ -190,4 +190,49 @@ let math = MathComponent {
 let name = math.name();
 ```
 
-You can also use the LibraryComponent trait to create generic functions or data types that can work with any library that implements the trait. This allows for greater flexibility and reuse of code. For example, you could create a generic function that takes a LibraryComponent as an argument and prints the name and description of the library:
+You can also use the LibraryComponent trait to create generic functions or data types that can work with any library that implements the trait. This allows for greater flexibility and reuse of code. For example, you could create a generic function that takes a LibraryComponent as an argument and prints the name and description of the library.
+
+# Ideas
+
+## Typing and Constant additions
+
+To add some types we could implement an other field to the Library struct, something like `types`. A simple Hashmap who hold the name of the type as a string and the struct of the type.
+
+```rs
+struct Library<T> {
+    // Name of the lib
+    name: String,
+    // Functions of the library
+    functions: HashMap<String, Box<dyn fn(T, T) -> T>>,
+    // Types of the library
+    types: HashMap<String, Box<dyn TypeInfo>>
+    // Constant of the library
+    constants: HashMap<String, Box<dyn ConstantExample>>
+}
+// WARNING CHECK THE T TYPE
+struct TypeInfo<T> {
+    // Name of the type
+    name: String,
+    // Size of the type in bytes
+    size: usize,
+    // The function to create an instance of the type you want like in rust for the String::new()
+    // For example you can create a Point type
+    create: fn() -> Box<T>, //Check if T can be used here ....
+    // A HashMap of the available functions for the type
+    functions: HashMap<String, Box<dyn Fn(T, T) -> T>>
+}
+impl<T> TypeInfo<T> {
+    pub fn new(name: &str, size: usize, create: fn() -> Box<T>, functions: HashMap<String, Box<dyn Fn(T, T) -> T>>) -> TypeInfo<T> {
+
+    }
+}
+
+struct ConstantExample<T> {
+    value: T,
+    // ? something else ?
+}
+```
+
+## Sublibraries
+
+Don't forget to add the features of sublibraries, like just load a part of the library (with hierarchy)

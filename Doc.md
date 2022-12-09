@@ -48,9 +48,9 @@ In addition to the basic and array types, this programming language also support
 ```rs
 // Define the Position component, which represents the position of an entity
 component Position {
-    attr x: f32 = 0.0;
-    attr y: f32 = 0.0;
-    attr z: f32 = 0.0;
+    key x: f32 = 0.0;
+    key y: f32 = 0.0;
+    key z: f32 = 0.0;
 }
 
 // Define the MoveSystem system, which updates the position of an entity
@@ -122,9 +122,9 @@ This programming language supports the class and struct keywords for defining cl
 // Basic struct
 struct Position2D {
     // x is statically typed (recommended)
-    attr x: f32,
+    key x: f32,
     // y is dynamically typed (not recommended)
-    attr y
+    key y
 }
 // Basic class
 class Human2D {

@@ -1,21 +1,26 @@
 # Reg-lang
 
-Experimental language build with rust.
+Experimental language build with Rust.
 
 Its aim is :
 
 - [ ] To be simple to help learning programmation with, and in a second hand, to be robust enough to power complex software.
+> Maybe ? (lmao yes obviously)
 
 - [ ] Both interpreted and compiled.
+> The interpreter is nearly ready to go!
 
 - [ ] Dymanic and statically typed (You can choose the one you want).
+> Need to check again if we keep that or not
 
 - [ ] Live programming.
+> A prototype for that is being written... just need to w8 a bit.
 
 - [ ] To provide a new type of asynchronous operations.
+> No real idea for now...
 
 - [ ] New type of Debugger, more simpler for the programmer.
+> Ideas but nothing more...
 
-- [ ] Error handler like Lisp.
-
-- [ ] Lot of librairies to help building complex software.
+- [ ] Lot of librairies to help building complex software such as a Math, Science, Game Engine ones for example.
+> The prototype is nearly finished... just need to w8 a bit.

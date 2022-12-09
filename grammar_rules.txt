@@ -8,6 +8,6 @@ unary          → ( "!" | "-" ) unary
 primary        → NUMBER | STRING | "true" | "false" | "none"
                | "(" expression ")" ;
 
-()  => 0 or 1 time what's inside
+()  => 1 time what's inside
 ""  => Token
 ()* => What's inside can be repeated

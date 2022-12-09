@@ -37,7 +37,7 @@ pub(crate) enum LiteralValue {
 pub(crate) enum Expr {
     Binary {
         left: Box<Expr>,
-        operator: Token,
+        operator: Token, // + - * / % == != > >= < <=
         right: Box<Expr>,
     },
     Grouping {
@@ -47,7 +47,7 @@ pub(crate) enum Expr {
         value: LiteralValue,
     },
     Unary {
-        operator: Token,
+        operator: Token, // + - * / % == != > >= < <=
         right: Box<Expr>,
     },
     Variable {
