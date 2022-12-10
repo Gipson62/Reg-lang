@@ -327,3 +327,5 @@ func main() {
     }
 }
 ```
+
+> Need to rewrite some part of this doc to be up to date with some new features

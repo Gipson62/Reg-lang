@@ -1,380 +1,270 @@
-use crate::core::{
-    errors::errors::{
-        Error,
-        ErrorType,
-    },
-    tokens::{
-    position::Position,
-    token::{
-        Token,
-        TokenType,
-        Keywords,
-        Characters,
-        }
-    },
+use crate::{
+    core::{
+        tokens::{
+            tokens::Token,
+            tokens_type::TokenType,
+            position::Position,
+            keywords::Keywords,
+        },
+        errors::errors::{
+            Error,
+            ErrorType,
+        },
+    }, 
+    Language
 };
 
-/// The [`Lexer`] is responsible for taking the source code and turning it into a list of [`Token`].
+#[derive(Clone, Debug, PartialEq)]
+/// The `Lexer` is responsible for taking the source code and turning it into a list of `Tokens`.
 pub(crate) struct Lexer {
-    pub file_name:String,
-    pub txt:Vec<char>,
-    pub pos:Position,
-    pub current_char:char,
+    pub source: Vec<char>,
+    pub tokens: Vec<Token>,
+    pub pos: Position,
+    pub current_char: char,
+    pub lang: Language,
+    pub keywords: Keywords,
 }
 impl Lexer {
-    /// Creates a new [`Lexer`].
-    pub fn new(filename:String, txt:String) -> Lexer {
+    /// Create a new `Lexer` instance.
+    pub fn new(source: String, pos: Position, lang: Language) -> Lexer {
+        let source_vec:Vec<char> = source.chars().collect();
         let mut lexer = Lexer {
-            file_name: filename.clone(),
-            pos: Position::new(
-                0,
-                0,
-                0,
-                filename.clone(),
-            ),
-            txt: txt.chars().collect(),
-            current_char: '\0',
+            source: source_vec.clone(),
+            tokens: Vec::new(),
+            pos,
+            current_char: source_vec.clone()[0],
+            lang,
+            keywords: Keywords::new(),
         };
-        lexer.advance();
+        lexer.source.push('\0');
         return lexer
     }
-    /// Advance the position of the lexer to the next char.
+    /// Advance the position of the `Lexer` to the next char.
     fn advance(&mut self) {
-        self.pos.advance(Some(self.current_char));
-        self.current_char = if self.pos.idx < self.txt.len() as u32 + 1 {
-            self.txt[self.pos.idx as usize -1 ]
-        } else {
-            '\0'
-        };
-    }
-    /// Creates a new [`Token`] with the given [`TokenType`] for each characters in the text.
-    pub fn make_tokens(&mut self) -> Vec<Token>{
-        let mut tokens:Vec<Token> = Vec::new();
-        let characters = Characters::new();
-
-        while self.current_char != '\0' {
-            if self.current_char == characters.skip_letters {
-                self.advance();
-            } else if self.current_char == characters.comment_symbol {
-                self.skip_comment();
-            } else if characters.digits.contains(&self.current_char) {
-                tokens.push(self.make_number(characters.clone()));
-            } else if characters.letters.contains(&self.current_char) {
-                tokens.push(self.make_identifier(characters.clone()));
-            } else if characters.symbols.contains(&self.current_char) {
-                tokens.push(self.make_symbols().unwrap());
-                self.advance();
-            } else if self.current_char == ' ' {
-                self.advance();
-            } 
-            else {
-                let pos_start = self.pos.clone();
-                let pos_end = self.pos.clone();
-                let error = Error::new(pos_start, pos_end, format!("Unexpected character: '{}'", self.current_char), ErrorType::IllegalCharError);
-                panic!("{}", error.as_string());
-            }
-        }
-        tokens.push(Token::new(TokenType::TTEndOfLine, self.pos.clone(), self.pos.clone(), '\0'.to_string()));
-        for token in tokens.clone() {
-            println!("[{}] ", token.to_string());
-        }
-        return tokens
-    }
-    /// Make the token for all the symbols supported (except for the comment symbol)
-    /// 
-    /// Symbols supported (for the moment): + * / ^ ( ) [ ] , ; \n \t > < = ! " -
-    /// 
-    /// - Todo : add '{' '}' => struct/dictionaries
-    /// - Todo : add ':' => type hinting 
-    /// - Todo : add '%' => modulo operator
-    ///     - Add TypeHinting
-    fn make_symbols(&mut self) -> Option<Token> {
-        match self.current_char {
-            '+' => {
-                return Some(Token::new(TokenType::TTPlus, self.pos.clone(), self.pos.clone(), String::from("+")))
-            }
-            '(' => {
-                return Some(Token::new(TokenType::TTLParen, self.pos.clone(), self.pos.clone(), String::from("(")))
-            }
-            ')' => {
-                return Some(Token::new(TokenType::TTRParen, self.pos.clone(), self.pos.clone(), String::from(")")))
-            }
-            '[' => {
-                return Some(Token::new(    TokenType::TTLSquare,    self.pos.clone(),    self.pos.clone(),    String::from("["))
-                )
-            }
-            ']' => {
-                return Some(Token::new(    TokenType::TTRSquare,    self.pos.clone(),    self.pos.clone(),    String::from("]"))
-                )
-            }
-            '*' => {
-                return Some(Token::new(    TokenType::TTMultiply,    self.pos.clone(),    self.pos.clone(),    String::from("*"))
-                )
-            }
-            '/' => {
-                return Some(Token::new(    TokenType::TTDivide,    self.pos.clone(),    self.pos.clone(),    String::from("/"))
-                )
-            }
-            '^' => {
-                return Some(Token::new(    TokenType::TTPower,    self.pos.clone(),    self.pos.clone(),    String::from("^"))
-                )
-            }
-            ',' => {
-                return Some(Token::new(    TokenType::TTComma,    self.pos.clone(),    self.pos.clone(),    String::from(","))
-                )
-            }
-            ';' => {
-                return Some(Token::new(    TokenType::TTSemicolon,    self.pos.clone(),    self.pos.clone(),    String::from(";"))
-                )
-            }
-            '\n' => {
-                return Some(Token::new(    TokenType::TTNewLine,    self.pos.clone(),    self.pos.clone(),    String::from("\n"))
-                )
-            }
-            '\t' => {
-                return Some(Token::new(    TokenType::TTTabulation,    self.pos.clone(),    self.pos.clone(),    String::from("\t"))
-                )
-            }
-            '"' => {
-                return Some(self.make_string())
-            }
-            '-' => {
-                return Some(self.make_minus_or_arrow())
-            }
-            '=' => {
-                return Some(self.make_equals())
-            }
-            '!' => {
-                return Some(self.make_not_equals())
-            }
-            '>' => {
-                return Some(self.make_greater_than())
-            }
-            '<' => {
-                return Some(self.make_less_than())
-            }
-            _ => {
-                return None
-            }
+        self.pos.advance(Some(self.current_char.clone()));
+        
+        if !self.is_at_end() {
+            self.current_char = self.source[self.pos.idx as usize];
         }
     }
-    /// Make the token for '<' and '<=' (if the next char is '=')
-    fn make_less_than(&mut self) -> Token {
-        let pos_start = self.pos.clone();
-        self.advance();
-        if self.current_char == '=' {
-            self.advance();
-            return Token::new(
-                TokenType::TTLessThanEqual,
-                pos_start,
-                self.pos.clone(),
-                String::from("<=")
-            )
-        }
-        return Token::new(
-            TokenType::TTLessThan,
-            pos_start,
-            self.pos.clone(),
-            String::from("<")
-        )
-    }
-    /// Make the token for '>' or '>=' (if the next char is '=') 
-    fn make_greater_than(&mut self) -> Token {
-        let pos_start = self.pos.clone();
-        self.advance();
-        if self.current_char == '=' {
-            self.advance();
-            return Token::new(
-                TokenType::TTGreaterThanEqual,
-                pos_start,
-                self.pos.clone(),
-                String::from(">=")
-            )
-        } else {
-            return Token::new(
-                TokenType::TTGreaterThan,
-                pos_start,
-                self.pos.clone(),
-                String::from(">")
-            )
-        }
-    }
-    /// Make the token for '!=' (if the next char isn't '=' Lexer will panic and return an error)
-    fn make_not_equals(&mut self) -> Token {
-        let pos_start = self.pos.clone();
-        self.advance();
-
-        if self.current_char == '=' {
-            self.advance();
-            return Token::new(
-                TokenType::TTNotEqual,
-                pos_start,
-                self.pos.clone(),
-                String::from("!=")
-            )
-        }
-        self.advance();
-        let error = Error::new(
-            pos_start,
-            self.pos.clone(),
-            String::from("Expected '=' after '!'"),
-            ErrorType::ExpectedCharError
-        );
-        panic!("{}",error.as_string());
-    }
-    /// Make the token for the equal or double equal symbol.
-    fn make_equals(&mut self) -> Token {
-        let pos_start = self.pos.clone();
-        self.advance();
-
-        if self.current_char == '=' {
-            self.advance();
-            return Token::new(
-                TokenType::TTDoubleEqual,
-                pos_start,
-                self.pos.clone(),
-                String::from("==")
-            )
-        }
-
-        return Token::new(
-            TokenType::TTEqual,
-            pos_start,
-            self.pos.clone(),
-            String::from("=")
-        )
-    }
-    /// Create the minus or the arrow [`Token`]
-    /// 
-    /// Arrow is used for the function definition
-    fn make_minus_or_arrow(&mut self) -> Token {
-        let pos_start = self.pos.clone();
-        self.advance();
-
-        if self.current_char == '>' {
-            self.advance();
-            return Token::new(
-                TokenType::TTArrow,
-                pos_start,
-                self.pos.clone(),
-                String::from("->")
-            )
-        } else {
-            return Token::new(
-                TokenType::TTMinus,
-                pos_start,
-                self.pos.clone(),
-                String::from("-"))
-
-        }
-    }
-    /// Create the string [`Token`] (string are between double quotes)
-    /// 
-    /// (char is not supported yet)
-    fn make_string(&mut self) -> Token {
-        let mut string = String::new();
-        let pos_start = self.pos.clone();
-        let mut escape_character = false;
-        self.advance();
-
-        let escape_characters = ['n', 't',];
-
-        while self.current_char != '\0' && (self.current_char != '"' || escape_characters.contains(&self.current_char)) {
-            if escape_character {
-                if escape_characters.contains(&self.current_char) {
-                    string.push(char::from(92));
-                    string.push(self.current_char);
+    /// Create a new [`Token`] with the given [`TokenType`] for each characters in the source code.
+    pub fn make_tokens(&mut self) -> Vec<Token> {
+        while !self.is_at_end() {
+            match self.current_char {
+                '(' => {
+                    self.tokens.push(Token::new(TokenType::TTLParen, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                ')' => {
+                    self.tokens.push(Token::new(TokenType::TTRParen, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '{' => {
+                    self.tokens.push(Token::new(TokenType::TTLBrace, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '}' => {
+                    self.tokens.push(Token::new(TokenType::TTRBrace, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '[' => {
+                    self.tokens.push(Token::new(TokenType::TTLSquare, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                ']' => {
+                    self.tokens.push(Token::new(TokenType::TTRSquare, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                ',' => {
+                    self.tokens.push(Token::new(TokenType::TTComma, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '.' => {
+                    self.tokens.push(Token::new(TokenType::TTDot, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '-' => {
+                    self.advance(); 
+                    if self.current_char == '>' {
+                        self.tokens.push (Token::new(TokenType::TTArrow, format!("-{}", self.current_char), self.pos.clone()));
+                        self.advance();
+                    }else {
+                        self.tokens.push(Token::new(TokenType::TTMinus, "-".to_string(), self.pos.clone()));
+                    }
+                },
+                '+' => {
+                    self.tokens.push(Token::new(TokenType::TTPlus, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                ';' => {
+                    self.tokens.push(Token::new(TokenType::TTSemicolon, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '*' => {
+                    self.tokens.push(Token::new(TokenType::TTStar, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '/' => {
+                    self.tokens.push(Token::new(TokenType::TTSlash, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
                 }
-            } else {
-                if self.current_char == char::from(92) {
-                    escape_character = true;
-                } else {
-                    string.push(self.current_char);
-                }
+                '^' => {
+                    self.tokens.push(Token::new(TokenType::TTPower, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '%' => {
+                    self.tokens.push(Token::new(TokenType::TTModulo, self.current_char.to_string(), self.pos.clone()));
+                    self.advance();
+                },
+                '!' => {
+                    self.advance();
+                    if self.current_char == '=' {
+                        self.tokens.push(Token::new(TokenType::TTNotEqual, format!("!{}", self.current_char), self.pos.clone()));
+                        self.advance();
+                    } else {
+                        self.tokens.push(Token::new(TokenType::TTNot, "!".to_string(), self.pos.clone()));
+                    }
+                },
+                '=' => {
+                    self.advance();
+                    if self.current_char == '=' {
+                        self.tokens.push(Token::new(TokenType::TTDoubleEqual, format!("={}", self.current_char), self.pos.clone()));
+                        self.advance();
+                    } else {
+                        self.tokens.push(Token::new(TokenType::TTEqual, "=".to_string(), self.pos.clone()));
+                    }
+                },
+                '<' => {
+                    self.advance();
+                    if self.current_char == '=' {
+                        self.tokens.push(Token::new(TokenType::TTLessThanEqual, format!("<{}", self.current_char), self.pos.clone()));
+                        self.advance();
+                    } else {
+                        self.tokens.push(Token::new(TokenType::TTLessThanEqual, "<".to_string(), self.pos.clone()));
+                    }
+                },
+                '>' => {
+                    self.advance();
+                    if self.current_char == '=' {
+                        self.tokens.push(Token::new(TokenType::TTGreaterThanEqual, format!(">{}", self.current_char), self.pos.clone()));
+                        self.advance();
+                    } else {
+                        self.tokens.push(Token::new(TokenType::TTGreaterThan, ">".to_string(), self.pos.clone()));
+                    }
+                },
+                '#' => {
+                    self.skip_comment();
+                },
+                '"' => {
+                    self.advance();
+                    self.make_string();
+                },
+                '\n' => {
+                    self.pos.advance(Some(self.current_char));
+                    self.advance();
+                },
+                ' ' | '\r' | '\t' => {
+                    self.advance();
+                },
+                _ => {
+                    if self.current_char.is_numeric() {
+                        self.make_number();
+                    } else if self.current_char.is_alphabetic() {
+                        self.make_identifier();
+                    } else {
+                        self.lang.error(self.pos.clone(), ErrorType::ExpectedCharError, format!("Unexpected Character '{}'", self.current_char),);
+                        self.advance()
+                    };
+                },
             }
-            self.advance();
-            escape_character = false;
+            println!("\"{}\" {}", self.current_char, self.pos)
         }
-        if self.current_char != '"' {
-            let error = Error::new(
-                pos_start.clone(),
-                self.pos.clone(),
-                String::from("Expected '\"' at the end of a string"),
-                ErrorType::InvalidSyntaxError,
-            );
-            panic!("{}", error.as_string());
-        }
-        self.advance();
-        return Token::new(
-            TokenType::TTString,
-            pos_start,
-            self.pos.clone(),
-            string
-        )
-    }
-    /// Skip the line commented with `#`
-    fn skip_comment(&mut self) {
-        self.advance();
 
-        while self.current_char != '\0' || self.current_char != '\n' {
+        self.tokens.push(Token::new(TokenType::TTEndOfFile, "EOF".to_string(), self.pos.clone()));
+        
+        for token in self.tokens.clone() {
+            println!("{}", token.as_string());
+        }
+        return self.tokens.clone();
+    }
+    /// Make a `Keyword` or `Identifier` token based on the `Keyword` struct.
+    fn make_identifier(& mut self) {
+        let mut key = String::new();
+        let mut is_keyword: bool = false;
+
+        while self.current_char.is_alphanumeric() || self.current_char == '_' {
+            key.push(self.current_char);
             self.advance();
         }
 
-        self.advance();
+        for keyword in self.keywords.keywords.clone() {
+            if key == keyword.name {
+                self.tokens.push(Token::new(keyword.tok_type, key.clone(), self.pos.clone()));
+                is_keyword = true;
+                break;
+            }
+        }
+
+        if !is_keyword {
+            self.tokens.push(Token::new(TokenType::TTIdentifier, key.clone(), self.pos.clone()));
+        }        
     }
-    /// Create the int or the float [`Token`] (the usigned int is not supported)
-    fn make_number(&mut self, characters:Characters) -> Token {
+    /// Make an `Int` or a `Float` token based on if there's a `.` or not.
+    fn make_number(&mut self) {
         let mut num_str = String::new();
-        let mut dot_count:u8 = 0;
-        let pos_start = self.pos.clone();
+        let mut dot_count = 0;
 
-        while self.current_char != '\0' && (characters.digits.contains(&self.current_char) || self.current_char == '.') {
+        while (self.current_char.is_numeric() || self.current_char == '.') && !self.is_at_end() {
             if self.current_char == '.' {
                 if dot_count == 1 {
+                    self.lang.error(self.pos.clone(), ErrorType::ExpectedCharError, "Cannot have more than one decimal point in a number".to_string());
                     break;
                 }
                 dot_count += 1;
             }
             num_str.push(self.current_char);
-            self.advance()
-        }
-
-        if dot_count == 0 {
-            return Token::new(
-                TokenType::TTInt,
-                pos_start,
-                self.pos.clone(),
-                num_str,
-            )
-        } else {
-            return Token::new(
-                TokenType::TTFloat,
-                pos_start,
-                self.pos.clone(),
-                num_str,
-            )
-        }
-    }
-    /// Create the identifier or keyword [`Token`]
-    /// 
-    /// One is for the variable/func create by the user
-    /// The other is for all the keywords in this language
-    fn make_identifier(&mut self, characters:Characters) -> Token {
-        let mut keyword = String::new();
-        let pos_start = self.pos.clone();
-        let all_keywords = Keywords::new();
-
-        while self.current_char != '\0' && (characters.letters.contains(&self.current_char) || self.current_char == '_' ) {
-            keyword.push(self.current_char);
             self.advance();
         }
 
-        for key in all_keywords.iter() {
-            if key == &keyword {
-                return Token::new(TokenType::TTKeyword,pos_start,self.pos.clone(),keyword
-                )
-            }
+        if dot_count == 0 {
+            self.tokens.push(Token::new(TokenType::TTInt, num_str, self.pos.clone()));
+        } else {
+            self.tokens.push(Token::new(TokenType::TTFloat, num_str, self.pos.clone()));
         }
-        return Token::new(TokenType::TTIdentifier, pos_start, self.pos.clone(), keyword)
+    }
+    /// Make a `String` token if there's no `"` at the end of the string, that add an error to the `Lang` struct.
+    fn make_string(&mut self) {
+        let mut string = String::new();
+
+        while self.current_char != '"' && !self.is_at_end() {
+            if self.current_char == '\n'{
+                self.pos.advance(Some('\n'));
+            }
+            string.push(self.current_char);
+            self.advance();
+        }
+
+        if self.is_at_end() || self.current_char != '"' {
+            self.lang.error(self.pos.clone(), ErrorType::ExpectedCharError, "Expected '\"'".to_string());
+        }
+
+        self.advance();
+        self.tokens.push(Token::new(TokenType::TTString, string, self.pos.clone()));
+    }
+    /// Skip a comment if there's a `#` at the start of the line.
+    fn skip_comment(&mut self) {
+        self.advance();
+
+        while !self.is_at_end() {
+            if self.current_char == '\n' {
+                break;
+            }
+            self.advance();
+        }
+        self.advance();
+    }
+    /// Check if the lexer is at the end of the file.
+    fn is_at_end(&self) -> bool {
+        return self.pos.idx as usize >= self.source.len() - 1;
     }
 }

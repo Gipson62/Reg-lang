@@ -10,8 +10,9 @@ Its aim is :
 - [ ] Both interpreted and compiled.
 > The interpreter is nearly ready to go!
 
-- [ ] Dymanic and statically typed (You can choose the one you want).
+- [ ] Dymanicaly and statically typed (You can choose the one you want).
 > Need to check again if we keep that or not
+> There gonna be a `Any` Type, so the Dynamic typing can be used with that
 
 - [ ] Live programming.
 > A prototype for that is being written... just need to w8 a bit.

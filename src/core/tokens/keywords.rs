@@ -1,4 +1,4 @@
-use crate::unstable::tokens::tokens_type::TokenType;
+use crate::core::tokens::tokens_type::TokenType;
 
 #[derive(Clone, Debug, PartialEq)]
 /// Struct representing a `Keyword`.

@@ -1,5 +1,5 @@
 ```rs
-STATEMENT => ce qui apparait
+//STATEMENT => what's "visible" in the file
 {
     functions : HashMap of FuncNode, (String /*for the name as a key*/)
     // => When the program start, the interpreter gonna read the "main" function.
@@ -10,7 +10,8 @@ STATEMENT => ce qui apparait
 }
 
 // Exemple of a STATEMENT
-
+// Maybe implement that for class, so what's inside a class is ordered...
+// But the prototype to create and instantiate classes don't exist for now, so no need to think too much about that
 
 class Hello {
     func printHelloWorld() {
@@ -78,6 +79,11 @@ struct Statement {
                 contain: "Hello World"
             })
         }
+    }),
+    variables: HashMap("A", VarNode {
+        value: 5,
+        const: true,
+        type: int
     })
 }
 ```

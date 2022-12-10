@@ -75,6 +75,7 @@ use std::collections::HashMap;
 struct MathLibrary<T> {
     // Define a HashMap to hold the list of available functions
     functions: HashMap<String, Box<dyn Fn(T, T) -> T>>,
+    // Types and Constants field ?
 }
 
 // Implement the load method for the Math library
@@ -155,6 +156,7 @@ struct MathComponent {
     description: String,
     functions: HashMap<String, Function>,
     // additional fields specific to the Math library
+    // Types and Constants field ?
 }
 ```
 
@@ -207,32 +209,47 @@ struct Library<T> {
     // Types of the library
     types: HashMap<String, Box<dyn TypeInfo>>
     // Constant of the library
-    constants: HashMap<String, Box<dyn ConstantExample>>
+    constants: HashMap<String, Box<dyn ConstantInfo>>
 }
 // WARNING CHECK THE T TYPE
 struct TypeInfo<T> {
     // Name of the type
-    name: String,
+    name: &str,
     // Size of the type in bytes
     size: usize,
-    // The function to create an instance of the type you want like in rust for the String::new()
-    // For example you can create a Point type
-    create: fn() -> Box<T>, //Check if T can be used here ....
-    // A HashMap of the available functions for the type
+    // A HashMap of the available functions for the type (check if we need to use the T type here but normally yes)
     functions: HashMap<String, Box<dyn Fn(T, T) -> T>>
 }
 impl<T> TypeInfo<T> {
-    pub fn new(name: &str, size: usize, create: fn() -> Box<T>, functions: HashMap<String, Box<dyn Fn(T, T) -> T>>) -> TypeInfo<T> {
-
+    // Function to load all the function of this type in the functions field
+    pub fn load() {
+        // Same as MathLibrary load() function
     }
 }
 
-struct ConstantExample<T> {
+struct ConstantInfo<T> {
     value: T,
     // ? something else ?
+    // Maybe a description and the name of the constant
 }
 ```
+
+> Maybe the Types and Constants of a libraries could go somewhere else, like in the `Statement` struct of the Parser, so the user doesn't need to do something like `Math.int` or `Math.Pi` to use constant and type. (Just an idea)
 
 ## Sublibraries
 
 Don't forget to add the features of sublibraries, like just load a part of the library (with hierarchy)
+
+# Types Hierarchies :
+
+- ``Any``: This is the root type of the hierarchy, and it represents any value of any type. It is the default type for variables that are declared without a specific type.
+
+- ``Primitive``: This is a subtype of "Any", and it represents the basic, built-in types of the language, such as "char", "int", "boolean", "float", etc. These types have a fixed size and range, and they provide the basic operations and functions for the language.
+
+- ``Enum``: This is a subtype of "Any", and it represents a set of named constants that can be used as the type of a variable. An enum type is defined by the programmer, and it consists of a set of named values that represent the possible states or values of the variable.
+
+- ``Struct``: This is a subtype of "Any", and it represents a composite type that consists of multiple fields or properties of different types. A struct type is defined by the programmer, and it provides a convenient way to group and manipulate related data.
+
+- ``Class``: This is a subtype of "Any", and it represents a reference type that defines a blueprint or template for objects. A class type is defined by the programmer, and it provides a way to define the behavior and state of objects that are created from the class.
+
+- ``Interface``: This is a subtype of "Any", and it represents a contract or protocol that defines a set of methods or properties that a class must implement. An interface type is defined by the programmer, and it provides a way to specify the required behavior of a class without specifying its implementation.

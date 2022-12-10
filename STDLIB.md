@@ -1,3 +1,5 @@
+> Maybe entirely rework this part because the lib system is different
+
 # STDLIB théorique du langage 
 ## Types
 
