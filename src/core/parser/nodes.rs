@@ -1,15 +1,10 @@
 use crate::{
     core::{
-        tokens::{
-            tokens::Token,
-            tokens_type::TokenType,
-        },
-        errors::errors::{
-            Error,
-            ErrorType,
+        lexer::{
+            lexer::Lexer,
+            token::*
         },
     },
-    Language,
 };
 
 /// List of possible `LiteralValue` types.

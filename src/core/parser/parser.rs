@@ -1,3 +1,4 @@
+/*// Need to rewrite the parser in unstable_parser.rs
 use crate::{
     core::{
         tokens::{
@@ -37,7 +38,7 @@ impl Parser {
     fn equality(&mut self) -> Expr {
         let mut expr: Expr = self.comparison();
 
-        while(self.matches(vec![TokenType::TTNotEqual, TokenType::TTDoubleEqual])) {
+        while(self.matches(vec![&TokenType::TTNotEqual, &TokenType::TTDoubleEqual])) {
             let operator: Token = self.previous();
             let right: Expr = self.comparison();
             expr = Expr::Binary {
@@ -53,7 +54,7 @@ impl Parser {
     fn comparison(&mut self) -> Expr {
         let mut expr: Expr = self.term();
 
-        while(self.matches(vec![TokenType::TTGreaterThan, TokenType::TTGreaterThanEqual, TokenType::TTLessThan, TokenType::TTLessThanEqual])) {
+        while(self.matches(vec![&TokenType::TTGreaterThan, &TokenType::TTGreaterThanEqual, &TokenType::TTLessThan, &TokenType::TTLessThanEqual])) {
             let operator: Token = self.previous();
             let right: Expr = self.term();
             expr = Expr::Binary {
@@ -69,7 +70,7 @@ impl Parser {
     fn term(&mut self) -> Expr {
         let mut expr: Expr = self.factor();
 
-        while(self.matches(vec![TokenType::TTMinus, TokenType::TTPlus])) {
+        while(self.matches(vec![&TokenType::TTMinus, &TokenType::TTPlus])) {
             let operator: Token = self.previous();
             let right: Expr = self.factor();
             expr = Expr::Binary{
@@ -85,7 +86,7 @@ impl Parser {
     fn factor(&mut self) -> Expr {
         let mut expr: Expr = self.unary();
 
-        while(self.matches(vec![TokenType::TTSlash, TokenType::TTStar])) {
+        while(self.matches(vec![&TokenType::TTSlash, &TokenType::TTStar])) {
             let operator: Token = self.previous();
             let right: Expr = self.unary();
             expr = Expr::Binary{
@@ -99,7 +100,7 @@ impl Parser {
     }
 
     fn unary(&mut self) -> Expr {
-        if self.matches(vec![TokenType::TTNot, TokenType::TTMinus]) {
+        if self.matches(vec![&TokenType::TTNot, &TokenType::TTMinus]) {
             let operator: Token = self.previous();
             let right: Expr = self.unary();
             return Expr::Unary {
@@ -112,34 +113,34 @@ impl Parser {
     }
 
     fn primary(&mut self) -> Expr {
-        if self.matches(vec![TokenType::TTFalse]) {
+        if self.matches(vec![&TokenType::TTFalse]) {
             return Expr::Literal {
                 value: LiteralValue::False,
             };
         }
-        if self.matches(vec![TokenType::TTTrue]) {
+        if self.matches(vec![&TokenType::TTTrue]) {
             return Expr::Literal {
                 value: LiteralValue::True,
             };
         }
-        if self.matches(vec![TokenType::TTNone]) {
+        if self.matches(vec![&TokenType::TTNone]) {
             return Expr::Literal {
                 value: LiteralValue::None,
             };
         }
-        if self.matches(vec![TokenType::TTFloat, TokenType::TTString]) {
+        if self.matches(vec![&TokenType::TTFloat(_), &TokenType::TTString(_)]) {
             return Expr::Literal {
                 value: LiteralValue::BaseNumberFloat(self.previous().lexeme.parse::<f64>().unwrap()),
             };
         }
-        if self.matches(vec![TokenType::TTString]) {
+        if self.matches(vec![&TokenType::TTString(_)]) {
             return Expr::Literal {
                 value: LiteralValue::String(self.previous().lexeme),
             };
         }
-        if self.matches(vec![TokenType::TTLParen]) {
+        if self.matches(vec![&TokenType::TTLParen]) {
             let mut expr: Expr = self.expression();
-            self.consume(TokenType::TTRParen, "Expected ')' after expression.");
+            self.consume(&TokenType::TTRParen, "Expected ')' after expression.");
             return Expr::Grouping {
                 expression: Box::new(expr),
             };
@@ -148,7 +149,7 @@ impl Parser {
         }
     }
     /// Return true if the current token matches one of the types
-    fn matches(&mut self, types: Vec<TokenType>) -> bool {
+    fn matches(&mut self, types: Vec<&TokenType>) -> bool {
         for token_type in types {
             if self.check(token_type) {
                 self.advance();
@@ -167,12 +168,12 @@ impl Parser {
         return self.previous();
     }
     /// Return the current token and increment the current token index
-    fn check(&self, token_type: TokenType) -> bool {
+    fn check(&self, token_type: &TokenType) -> bool {
         if self.is_at_end() {
             return false;
         }
         
-        return self.peek().tok_type == token_type;
+        return &self.peek().tok_type == token_type;
     }
     /// Return true if the current token is the end of the file
     fn is_at_end(&self) -> bool {
@@ -192,10 +193,10 @@ impl Parser {
         return ParseError::new();
     }
 
-    fn consume(&mut self, token_type: TokenType, message: &str) -> Token {
+    fn consume(&mut self, token_type: &TokenType, message: &str) -> Token {
         if self.check(token_type) {
             return self.advance();
         }
         panic!("{}", self.error(self.peek(), message));
     }
-}
+}*/

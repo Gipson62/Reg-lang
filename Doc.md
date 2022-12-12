@@ -69,27 +69,24 @@ system MoveSystem {
         }
     }
 }
+// Define the entities and include the Position component
+entity EntityExample {
+    include Position;
+}
+
 
 func main() {
-    // Define the entities and include the Position component
-    entity entity1 {
-        include Position;
-    }
-    entity entity2 {
-        include Position;
-    }
-
     // Create a list of entities that have the Position component
     let entities:DynamicArray<entity> = DynamicArray(entity);
-    entities.push(entity1);
-    entities.push(entity2);
+    entities.push(new EntityExemple);
+    entities.push(new EntityExemple);
 
     // Update the entities using the MoveSystem system
     MoveSystem.update(entities);
 
     // Get the updated positions of the entities
-    let position1:Position = entity1.getComponent(Position);
-    let position2:Position = entity2.getComponent(Position);
+    let position1:Position = entities[0].getComponent(Position);
+    let position2:Position = entities[1].getComponent(Position);
     println "Entity 1's position:" + position1.x + position1.y + position1.z;
     println "Entity 2's position:" + position2.x + position2.y + position2.z;
 }

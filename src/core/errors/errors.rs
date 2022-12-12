@@ -1,8 +1,8 @@
-use crate::{
+/*use crate::{
     lib::string_with_arrows::{
         string_with_arrows,
     },
-    core::tokens::position::Position,
+    core::lexer::token::*,
 };
 use std::fmt;
 /// Base `Error` struct for the `Interpreter`.
@@ -69,4 +69,4 @@ impl fmt::Display for ErrorType {
             ErrorType::RunTimeError => write!(f, "Runtime Error"),
         }
     }
-}
+}*/

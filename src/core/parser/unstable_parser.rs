@@ -1,0 +1,3 @@
+/*
+Rewrite the Parser here to be able to use the new Token struct.
+*/
