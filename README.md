@@ -37,9 +37,9 @@ Its aim is :
 
 # Contribution 
 
-You can help us improve this project by proposing changes through our (Discord server)[https://discord.gg/zQfaTBAXg4] or the (Issues section)[https://github.com/Gipson62/Reg-lang/issues] of our GitHub page. We welcome all suggestions and encourage you to submit (pull requests)[https://github.com/Gipson62/Reg-lang/pulls] if you have developed content to contribute.
+You can help us improve this project by proposing changes through our [Discord server](https://discord.gg/zQfaTBAXg4) or the [Issues section](https://github.com/Gipson62/Reg-lang/issues) of our GitHub page. We welcome all suggestions and encourage you to submit [pull requests](https://github.com/Gipson62/Reg-lang/pulls) if you have developed content to contribute.
 
-Our (Discord server)[https://discord.gg/zQfaTBAXg4] is a place where contributors can discuss ideas and collaborate on the project. The (Issues section)[https://github.com/Gipson62/Reg-lang/issues] on GitHub is where people can report bugs or propose new features for the project.
+Our [Discord server](https://discord.gg/zQfaTBAXg4) is a place where contributors can discuss ideas and collaborate on the project. The [Issues section](https://github.com/Gipson62/Reg-lang/issues) on GitHub is where people can report bugs or propose new features for the project.
 
 We appreciate any and all contributions, and we are excited to see what the community can come up with to help us improve our experimental language
 
