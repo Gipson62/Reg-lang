@@ -10,4 +10,4 @@ primary        → NUMBER | STRING | "true" | "false" | "none"
 
 ()  => 1 time what's inside
 ""  => Token
-()* => What's inside can be repeated
+()* => What's inside can be repeated (0 or more)

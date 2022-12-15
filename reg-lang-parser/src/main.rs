@@ -9,12 +9,10 @@ use pest::Parser;
 #[grammar = "./src/grammar.pest"]
 struct MyParser;
 
-pub fn tralala(hehe: &str) -> &str {
-    let tralalalala = MyParser::parse(Rule::file, hehe)
+fn main() {
+    let tralalalala = MyParser::parse(Rule::file, "5+5*2")
         .expect("unsuccessful parse")
         .next()
         .unwrap();
     print!("{:?}", tralalalala);
-
-    return "tralala";
 }
