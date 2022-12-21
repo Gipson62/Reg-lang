@@ -2,8 +2,8 @@
 
 use std::process::exit;
 use clap::{App, Arg, SubCommand};
-use reg_lang_parser::tralala;
+use reg_lang_parser::*;
 
 fn main() {
-    tralala("5+5*2");
-}
+    parse("4+5*5");
+}   

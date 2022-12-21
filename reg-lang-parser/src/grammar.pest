@@ -1,32 +1,23 @@
-// Need to be rafactor a lot... to be able to create a real AST (for now it's just a lot of arrays => not really useful)
+// Need to be refactor a lot... to be able to create a real AST (for now it's just a lot of arrays => not really useful)
 // TODO!: Add parenthesis support, exponentiation, and more operators like
-file = { SOI ~ input ~ EOI }
-input = { expr }
+file = _{ SOI ~ input ~ EOI }
+input = _{ term }
+WHITESPACE = _{" " | "\n" | "\t" }
 
 dot = { ^"." }
 digit = { '0'..'9' }
-int = @{ digit* }
-float = @{ digit+ ~ dot ~ digit* }
+int = @{ ^"-"? ~ digit+ }
+float = @{ ^"-"? ~ digit+ ~ dot ~ digit* }
 number = _{ float | int }
-WHITESPACE = _{ " " }
+term_operator = _{ add | sub }
+factor_operator = _{ mul | div | modulo }
+    add = { "+" }
+    mul = { "*" }
+    div = { "/" }
+    pow = { "^" }
+    modulo = { "%" }
+    sub = { "-" }
 
-operator = _{ plus | minus | slash | star | pow }
-pm = _{ plus | minus }
-md = _{ slash | star }
-p  = _{ pow }
-	plus = { ^"+" }
-    minus = { ^"-" }
-    slash = { ^"/" }
-    star = { ^"*" }
-    pow = {^"^"}
-
-expr = { add } 
-
-add = { mul ~ t? }
-t = { pm ~ add }
-
-mul = { exp  ~ g? }
-g = { md ~ mul }
-
-exp = { number ~ y? }
-y = { p ~ exp }
+term = { (factor | atom) ~ (term_operator ~ (factor | atom))* }
+factor = { atom ~ (factor_operator ~ atom)+ }
+atom = _{ number }

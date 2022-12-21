@@ -1,3 +1,3 @@
-pub fn tralalala2() {
-    println!("Hello, world!");
+pub fn compile_to_bytecode() {
+    
 }
