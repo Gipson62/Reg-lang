@@ -34,6 +34,10 @@ pub enum OpCode {
     LTE,
     /// Jump to the byte stored in the register1 if the last comparison was true `JMPE REGISTER1`
     JMPE,
+    /// Print the value of a register `PRINT REGISTER`
+    PRINT,
+    /// Print the value of a register with a newline `PRINTLN REGISTER`
+    PRINTLN,
     /// Illegal opcode
     ILG,
 }
@@ -57,6 +61,8 @@ impl From<u8> for OpCode {
             13 => OpCode::GTE,
             14 => OpCode::LTE,
             15 => OpCode::JMPE,
+            16 => OpCode::PRINT,
+            17 => OpCode::PRINTLN,
             _ => OpCode::ILG,
         }
     }
@@ -68,7 +74,7 @@ pub struct Instruction {
 impl Instruction {
     pub fn new(opcode: OpCode) -> Instruction {
       Instruction {
-        opcode: opcode
+        opcode
       }
     }
   }

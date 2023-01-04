@@ -279,12 +279,42 @@ pub fn compile(input :&str) -> RegCompiler {
                                 }
                             }
                         },
+                        Rule::PRINT => {
+                            compiler.program_counter += 1;
+                            compiler.program.push(OpCode::PRINT as u8);
+                            for args in instruction.into_inner() {
+                                match args.as_rule() {
+                                    Rule::REGISTER => {
+                                        let register = args.as_str().replace("$", "");
+                                        compiler.program.push(register.parse::<u8>().unwrap());
+                                    },
+                                    _ => {
+                                        panic!("Invalid rule (PRINT)");
+                                    }
+                                }
+                            }
+                        },
+                        Rule::PRINTLN => {
+                            compiler.program_counter += 1;
+                            compiler.program.push(OpCode::PRINTLN as u8);
+                            for args in instruction.into_inner() {
+                                match args.as_rule() {
+                                    Rule::REGISTER => {
+                                        let register = args.as_str().replace("$", "");
+                                        compiler.program.push(register.parse::<u8>().unwrap());
+                                    },
+                                    _ => {
+                                        panic!("Invalid rule (PRINTLN)");
+                                    }
+                                }
+                            }
+                        },
                         Rule::HLT => {
                             compiler.program_counter += 1;
                             compiler.program.push(OpCode::HLT as u8);
                         },
                         Rule::EOI => {
-                        } 
+                        } ,
                         _ => {
                             panic!("Invalid rule (instruction)");
                         }

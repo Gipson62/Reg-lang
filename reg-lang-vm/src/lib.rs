@@ -125,7 +125,15 @@ impl RegLangVM {
                 if self.equal_flag {
                     self.program_counter = target as usize;
                 }
-            }
+            },
+            OpCode::PRINT => {
+                let register = self.next_8_bits() as usize;
+                print!("{}", self.registers[register]);
+            },
+            OpCode::PRINTLN => {
+                let register = self.next_8_bits() as usize;
+                println!("{}", self.registers[register]);
+            },
             _ => {
                 println!("Unknown opcode encountered");
                 return true;
