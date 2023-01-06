@@ -1,4 +1,3 @@
-#![allow(unused, dead_code)]
 use reg_byte::OpCode;
 
 #[derive(Debug)]
@@ -8,7 +7,7 @@ pub struct RegLangVM {
     /// Program counter that tracks which byte is being executed
     program_counter: usize,
     /// The bytecode of the program being run
-    program: Vec<u8>,
+    pub program: Vec<u8>,
     /// Contains the remainder of modulo division ops
     remainder: u32,
     /// Contains the result of the last comparison operation

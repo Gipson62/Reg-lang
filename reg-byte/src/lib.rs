@@ -1,4 +1,3 @@
-#![allow(unused)]
 #[repr(u8)]
 /// OpCode enum for the VM
 pub enum OpCode {
@@ -68,7 +67,7 @@ impl From<u8> for OpCode {
     }
 }
 
-pub struct Instruction {
+/*pub struct Instruction {
     opcode: OpCode,
 }
 impl Instruction {
@@ -77,4 +76,4 @@ impl Instruction {
         opcode
       }
     }
-  }
+}*/
