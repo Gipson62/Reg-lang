@@ -1,3 +1,5 @@
+> :warning: Need to rewrite all the LCF pattern to match the FFI who gonna be implemented in the language.
+
 # WARNING
 
 This are just some ideas on how to implement the Libraries in the language. This is maybe a """new pattern""" derived from the ECS, we can call it Library Component Function (LCF for short) because I don't find any pattern that really fit my need.
